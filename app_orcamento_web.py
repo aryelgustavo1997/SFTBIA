@@ -26,8 +26,8 @@ st.markdown('<div class="main-title">Painel de Orçamentos Pós-Obra</div>', uns
 
 # --- FORMULÁRIO NA INTERFACE WEB ---
 st.markdown('<div class="section-title">Dados do Cliente</div>', unsafe_allow_html=True)
-nome = st.text_input("Nome do Cliente / Empresa:", placeholder="Ex: Roseli e Celso")
-endereco = st.text_input("Endereço / Local da Obra:", placeholder="Ex: Rua Al. Flamboyant, 145 - Vale das Águas")
+nome = st.text_input("Nome do Cliente / Empresa:", placeholder="Ex: Joao Silva")
+endereco = st.text_input("Endereço / Local da Obra:", placeholder="Ex: Rua, 123 - bairro")
 
 # Campo: Telefone do Cliente
 telefone = st.text_input("WhatsApp do Cliente (Apenas números com DDD):", placeholder="Ex: 11999998888")
@@ -44,9 +44,9 @@ with col3:
 st.markdown('<div class="section-title">Demonstrativo de Valores</div>', unsafe_allow_html=True)
 col_val1, col_val2 = st.columns(2)
 with col_val1:
-    material = st.number_input("Custos de Insumos/Produtos (R$):", min_value=0.0, step=100.0, value=1000.0)
+    material = st.number_input("Custos de Insumos/Produtos (R$):", min_value=0.0, step=50.0, value=0.0)
 with col_val2:
-    m_obra = st.number_input("Custo de Mão de Obra (R$):", min_value=0.0, step=100.0, value=2500.0)
+    m_obra = st.number_input("Custo de Mão de Obra (R$):", min_value=0.0, step=50.0, value=0.0)
 
 st.markdown('<div class="section-title">Particularidades do Serviço</div>', unsafe_allow_html=True)
 txt_produtos = st.text_area(
