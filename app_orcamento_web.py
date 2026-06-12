@@ -222,6 +222,6 @@ with col_btn2:
         link_whatsapp = f"https://api.whatsapp.com/send?phone={num_tel}&text={msg_codificada}"
         
         # Exibe o botão verde do WhatsApp
-        st.link_button("💬 ENVIAR VIA WHATSAPP", link_whatsapp, use_container_width=True, type="primary")
+        st.link_button("💬 ABRIR WHATSAPP", link_whatsapp, use_container_width=True, type="primary")
     else:
         st.button("💬 ENVIAR VIA WHATSAPP (Insira o telefone)", disabled=True, use_container_width=True)
