@@ -1,19 +1,20 @@
 import streamlit as st
 import os
+import urllib.parse
 from io import BytesIO
 from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, Image, HRFlowable
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib import colors
 
-# Configuração da Página Web (Isso deixa o app responsivo para celular)
+# Configuração da Página Web
 st.set_page_config(
-    page_title="Gerador de Orçamentos - Beatriz Hirayama",
+    page_title="Orçamentos - Beatriz Hirayama",
     page_icon="✨",
     layout="centered"
 )
 
-# Estilização da interface web via CSS simples
+# Estilização da interface web via CSS
 st.markdown("""
     <style>
     .main-title { font-size:28px; font-weight:bold; color:#1A365D; text-align:center; margin-bottom:20px; }
@@ -22,12 +23,14 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 st.markdown('<div class="main-title">Painel de Orçamentos Pós-Obra</div>', unsafe_allow_html=True)
-st.write("Preencha os dados abaixo para gerar o orçamento em PDF formatado.")
 
 # --- FORMULÁRIO NA INTERFACE WEB ---
 st.markdown('<div class="section-title">Dados do Cliente</div>', unsafe_allow_html=True)
-nome = st.text_input("Nome do Cliente / Empresa:", placeholder="Ex: Joao SIlva")
-endereco = st.text_input("Endereço / Local da Obra:", placeholder="Ex: Rua Al. Flamboyant, 145 - Vale das Águas")
+nome = st.text_input("Nome do Cliente / Empresa:", placeholder="Ex: Joao Silva")
+endereco = st.text_input("Endereço / Local da Obra:", placeholder="Ex: Rua, numero e bairro")
+
+# NOVO CAMPO: Telefone do Cliente
+telefone = st.text_input("WhatsApp do Cliente (Apenas números com DDD):", placeholder="Ex: 11999998888")
 
 st.markdown('<div class="section-title">Cronograma e Equipe</div>', unsafe_allow_html=True)
 col1, col2, col3 = st.columns(3)
@@ -105,7 +108,7 @@ def gerar_pdf_bytes():
     dados_cliente = [
         [Paragraph("<b>Cliente:</b>", style_corpo), Paragraph(nome if nome else "-", style_corpo), Paragraph("<b>Dias de Serviço:</b>", style_corpo), Paragraph(dias_servico if dias_servico else "-", style_corpo)],
         [Paragraph("<b>Endereço:</b>", style_corpo), Paragraph(endereco if endereco else "-", style_corpo), Paragraph("<b>Respaldo:</b>", style_corpo), Paragraph(dias_repasse if dias_repasse else "Não se aplica", style_corpo)],
-        ["", "", Paragraph("<b>Equipe Prevista:</b>", style_corpo), Paragraph(equipe if equipe else "-", style_corpo)]
+        [Paragraph("<b>Contato:</b>", style_corpo), Paragraph(telefone if telefone else "-", style_corpo), Paragraph("<b>Equipe Prevista:</b>", style_corpo), Paragraph(equipe if equipe else "-", style_corpo)]
     ]
     
     tabela_cliente = Table(dados_cliente, colWidths=[65, 235, 110, 130])
@@ -178,10 +181,10 @@ def gerar_pdf_bytes():
     buffer.seek(0)
     return buffer
 
-# --- BOTÃO DE DOWNLOAD ---
+# --- LOGICA DOS BOTÕES DE SAÍDA ---
 st.markdown("<br/>", unsafe_allow_html=True)
+
 if nome:
-    # Nome do arquivo limpo e dinâmico para salvar automaticamente
     nome_limpo = "".join(c for c in nome if c.isalnum() or c in (' ', '_', '-')).rstrip()
     nome_arquivo_pdf = f"Orcamento_PosObra_{nome_limpo}.pdf"
 else:
@@ -190,11 +193,35 @@ else:
 # Gerar o PDF
 pdf_data = gerar_pdf_bytes()
 
-# Botão nativo do Streamlit para baixar arquivos (funciona perfeitamente no iPhone)
-st.download_button(
-    label="✨ GERAR E BAIXAR ORÇAMENTO (PDF) ✨",
-    data=pdf_data,
-    file_name=nome_arquivo_pdf,
-    mime="application/pdf",
-    use_container_width=True
-)
+# Layout com duas colunas para os botões ficarem lado a lado
+col_btn1, col_btn2 = st.columns(2)
+
+with col_btn1:
+    st.download_button(
+        label="📥 BAIXAR ORÇAMENTO (PDF)",
+        data=pdf_data,
+        file_name=nome_arquivo_pdf,
+        mime="application/pdf",
+        use_container_width=True
+    )
+
+with col_btn2:
+    if telefone:
+        # Limpa o telefone deixando apenas números
+        num_tel = "".join(filter(str.isdigit, telefone))
+        
+        # Garante o código do país (55 para Brasil) caso o usuário não digite
+        if len(num_tel) == 11 or len(num_tel) == 10:
+            num_tel = "55" + num_tel
+            
+        # Mensagem personalizada formatada para URL do WhatsApp
+        msg_texto = f"Olá {nome if nome else ''}! Segue nosso orçamento, em caso de dúvidas ficamos à disposição."
+        msg_codificada = urllib.parse.quote(msg_texto)
+        
+        # Cria o link oficial da API do WhatsApp
+        link_whatsapp = f"https://api.whatsapp.com/send?phone={num_tel}&text={msg_codified}"
+        
+        # Exibe o botão verde do WhatsApp que abre o app automaticamente
+        st.link_button("💬 ENVIAR VIA WHATSAPP", link_whatsapp, use_container_width=True, type="primary")
+    else:
+        st.button("💬 ENVIAR VIA WHATSAPP (Insira o telefone)", disabled=True, use_container_width=True)
