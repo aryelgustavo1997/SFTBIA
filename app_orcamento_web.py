@@ -26,10 +26,10 @@ st.markdown('<div class="main-title">Painel de Orçamentos Pós-Obra</div>', uns
 
 # --- FORMULÁRIO NA INTERFACE WEB ---
 st.markdown('<div class="section-title">Dados do Cliente</div>', unsafe_allow_html=True)
-nome = st.text_input("Nome do Cliente / Empresa:", placeholder="Ex: Joao Silva")
-endereco = st.text_input("Endereço / Local da Obra:", placeholder="Ex: Rua, numero e bairro")
+nome = st.text_input("Nome do Cliente / Empresa:", placeholder="Ex: Roseli e Celso")
+endereco = st.text_input("Endereço / Local da Obra:", placeholder="Ex: Rua Al. Flamboyant, 145 - Vale das Águas")
 
-# NOVO CAMPO: Telefone do Cliente
+# Campo: Telefone do Cliente
 telefone = st.text_input("WhatsApp do Cliente (Apenas números com DDD):", placeholder="Ex: 11999998888")
 
 st.markdown('<div class="section-title">Cronograma e Equipe</div>', unsafe_allow_html=True)
@@ -100,7 +100,7 @@ def gerar_pdf_bytes():
     story.append(tabela_header)
     story.append(HRFlowable(width="100%", thickness=1.5, color=c_primaria, spaceBefore=0, spaceAfter=15))
 
-    intro_text = "Apresentamos nosso planejamento técnico e orçamento detalhado para a execução dos serviços pós-obra. Atuamos com foco total em excelência, organização e cuidado minucioso com o patrimônio de nossos clientes."
+    intro_text = "Apresentamos nosso planejamento técnico e orçamento detalhado para a execução dos serviços pós-obra. Atuamos com foco total em excelência, organization e cuidado minucioso com o patrimônio de nossos clientes."
     story.append(Paragraph(intro_text, style_corpo))
     story.append(Spacer(1, 10))
 
@@ -218,10 +218,10 @@ with col_btn2:
         msg_texto = f"Olá {nome if nome else ''}! Segue nosso orçamento, em caso de dúvidas ficamos à disposição."
         msg_codificada = urllib.parse.quote(msg_texto)
         
-        # Cria o link oficial da API do WhatsApp
-        link_whatsapp = f"https://api.whatsapp.com/send?phone={num_tel}&text={msg_codified}"
+        # Cria o link oficial da API do WhatsApp com o nome correto corrigido aqui:
+        link_whatsapp = f"https://api.whatsapp.com/send?phone={num_tel}&text={msg_codificada}"
         
-        # Exibe o botão verde do WhatsApp que abre o app automaticamente
+        # Exibe o botão verde do WhatsApp
         st.link_button("💬 ENVIAR VIA WHATSAPP", link_whatsapp, use_container_width=True, type="primary")
     else:
         st.button("💬 ENVIAR VIA WHATSAPP (Insira o telefone)", disabled=True, use_container_width=True)
