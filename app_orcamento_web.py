@@ -100,7 +100,7 @@ def gerar_pdf_bytes():
     story.append(tabela_header)
     story.append(HRFlowable(width="100%", thickness=1.5, color=c_primaria, spaceBefore=0, spaceAfter=15))
 
-    intro_text = "Apresentamos nosso planejamento técnico e orçamento detalhado para a execução dos serviços pós-obra. Atuamos com foco total em excelência, organization e cuidado minucioso com o patrimônio de nossos clientes."
+    intro_text = "Apresentamos nosso planejamento técnico e orçamento detalhado para a execução dos serviços pós-obra. Atuamos com foco total em excelência, organização e cuidado minucioso com o patrimônio de nossos clientes."
     story.append(Paragraph(intro_text, style_corpo))
     story.append(Spacer(1, 10))
 
